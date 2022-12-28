@@ -94,14 +94,14 @@
 	</dependencies>
 	
 	<distributionManagement>
-	  <snapshotRepository>
+	  <snapshot>
 	    <id>nexus-release-repo</id>
 	    <url>http://192.168.0.101:8081/repository/maven-snapshots/</url>
-	  </snapshotRepository>
-	  <releaserepository>
+	  </snapshot>
+	  <releasere>
 	    <id>nexus-release-repo</id>
 	    <url>http://192.168.0.101:8081/repository/maven-releases/</url>
-	  </releaserepository>
+	  </release>
     </distributionManagement> 
 	
 	<build>
