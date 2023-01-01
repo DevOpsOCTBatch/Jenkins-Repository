@@ -1,0 +1,34 @@
+node
+{
+def mavenHome=tool name: "maven3.8.6", type: "maven"
+
+stage('checkout')
+ {
+git branch: 'DevlopBranch', credentialsId: '4e1616e9-8c22-493b-852f-2aa4c519d668', url: 'https://github.com/DevOpsOCTBatch/Jenkins-Repository.git'
+ }
+stage('build')
+ {
+sh "${mavenHome}/bin/mvn clean package" 
+ }
+ stage('SonarQubeReport')
+ {
+sh "${mavenHome}/bin/mvn sonar:sonar"     
+ }
+ stage('UploadArtifactIntoNexus')
+ {
+ sh "${mavenHome}/bin/mvn deploy"
+ }
+ stage('DeployAppIntoTomcat')
+ {
+ sshagent(['5b844938-effa-4850-adce-9a6356b7e4ab']){
+ sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war  ec2-user@3.15.213.222:/opt/apache-tomcat-9.0.70/webapps/"
+ }
+ }
+ stage('EmailNotification')
+ {
+  emailext body: '''"Pipeline Build is over .. Build # is ..${env.BUILD_NUMBER} and Build status is.. ${currentBuild.result}.",
+
+Regards
+Girish Reddy''', subject: '"Pipeline Build is over .. Build # is ..${env.BUILD_NUMBER} and Build status is.. ${currentBuild.result}.",', to: 'ssmtpserverformemail@gmail.com'
+ }
+}
